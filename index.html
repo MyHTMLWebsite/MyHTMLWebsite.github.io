@@ -3,68 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Drawing System</title>
+  <title>Simple Paint App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-    #toolbar {
-      margin-bottom: 10px;
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-start;
+      width: 640px;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      padding: 5px;
+      background-color: #f0f0f0;
     }
+
     .tool {
       display: inline-block;
+      width: 30px;
+      height: 30px;
       margin: 0 5px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 30px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tool.selected {
+      background-color: lightblue;
+    }
+
+    .color-palette {
+      display: flex;
+      justify-content: flex-start;
+      width: 640px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
       padding: 5px;
+      background-color: #f0f0f0;
+    }
+
+    .color {
+      width: 30px;
+      height: 30px;
+      margin: 0 5px;
       border: 1px solid black;
       cursor: pointer;
     }
-    .tool.selected {
-      background-color: lightgray;
-    }
-    #canvas {
+
+    canvas {
       border: 1px solid black;
-      image-rendering: pixelated; /* Pixelated brush effect */
-      cursor: crosshair;
     }
   </style>
 </head>
 <body>
-  <h1>Simple Drawing System</h1>
-  <div id="toolbar">
-    <div class="tool selected" id="brush" onclick="selectTool('brush')">Brush</div>
-    <div class="tool" id="eraser" onclick="selectTool('eraser')">Eraser</div>
-    <div class="tool" id="bucket" onclick="selectTool('bucket')">Bucket</div>
-    <input type="color" id="colorPicker" value="#000000" onchange="changeColor(this.value)">
+  <h1>Simple Paint App</h1>
+  <div class="toolbar">
+    <div class="tool selected" id="pencil" onclick="selectTool('pencil')">✏️</div>
+    <div class="tool" id="eraser" onclick="selectTool('eraser')">🩹</div>
+    <div class="tool" id="fill" onclick="selectTool('fill')">🪣</div>
     <button onclick="clearCanvas()">Clear</button>
-    <button onclick="downloadDrawing()">Download</button>
+    <button onclick="downloadImage()">Download</button>
   </div>
+
   <canvas id="canvas" width="640" height="480"></canvas>
+
+  <div class="color-palette" id="colorPalette"></div>
 
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const tools = { brush: 'brush', eraser: 'eraser', bucket: 'bucket' };
-    let currentTool = tools.brush;
-    let currentColor = '#000000';
+    const tools = { pencil: 'pencil', eraser: 'eraser', fill: 'fill' };
+    let currentTool = tools.pencil;
     let isDrawing = false;
+    let currentColor = '#000000';
 
-    // Initialize canvas
+    // Initialize canvas to white
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     canvas.addEventListener('mousedown', (e) => {
-      if (currentTool === tools.bucket) {
+      isDrawing = true;
+      if (currentTool === tools.fill) {
         bucketFill(e.offsetX, e.offsetY);
       } else {
-        isDrawing = true;
         draw(e.offsetX, e.offsetY);
       }
     });
 
     canvas.addEventListener('mousemove', (e) => {
-      if (isDrawing && currentTool !== tools.bucket) {
+      if (isDrawing && currentTool !== tools.fill) {
         draw(e.offsetX, e.offsetY);
       }
     });
@@ -74,7 +110,7 @@
 
     function draw(x, y) {
       ctx.fillStyle = currentTool === tools.eraser ? '#FFFFFF' : currentColor;
-      ctx.fillRect(Math.floor(x), Math.floor(y), 10, 10); // Pixelated brush
+      ctx.fillRect(Math.floor(x / 10) * 10, Math.floor(y / 10) * 10, 10, 10); // Pixelated brush
     }
 
     function bucketFill(x, y) {
@@ -114,14 +150,9 @@
       }
     }
 
-    function changeColor(color) {
-      currentColor = color;
-    }
-
-    function selectTool(tool) {
-      currentTool = tool;
-      document.querySelectorAll('.tool').forEach((toolElement) => toolElement.classList.remove('selected'));
-      document.getElementById(tool).classList.add('selected');
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
     }
 
     function clearCanvas() {
@@ -129,17 +160,33 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
-    function downloadDrawing() {
+    function selectTool(tool) {
+      currentTool = tool;
+      document.querySelectorAll('.tool').forEach((el) => el.classList.remove('selected'));
+      document.getElementById(tool).classList.add('selected');
+    }
+
+    function changeColor(color) {
+      currentColor = color;
+    }
+
+    function downloadImage() {
       const link = document.createElement('a');
       link.download = 'drawing.png';
       link.href = canvas.toDataURL();
       link.click();
     }
 
-    function hexToRgb(hex) {
-      const bigint = parseInt(hex.slice(1), 16);
-      return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
-    }
+    // Initialize color palette
+    const colorPalette = document.getElementById('colorPalette');
+    const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
+    colors.forEach((color) => {
+      const colorBox = document.createElement('div');
+      colorBox.className = 'color';
+      colorBox.style.backgroundColor = color;
+      colorBox.onclick = () => changeColor(color);
+      colorPalette.appendChild(colorBox);
+    });
   </script>
 </body>
 </html>
