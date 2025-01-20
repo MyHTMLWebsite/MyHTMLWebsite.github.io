@@ -3,86 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic Chat System</title>
+  <title>Simple Drawing System</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #f9f9f9;
+      text-align: center;
+      margin: 20px;
     }
-    .chat-container {
-      width: 90%;
-      max-width: 500px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #fff;
-      margin: 20px 0;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    #toolbar {
+      margin-bottom: 10px;
     }
-    .chat-window {
-      height: 300px;
-      overflow-y: auto;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-    .chat-window div {
-      margin: 5px 0;
-    }
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      gap: 10px;
-    }
-    .chat-input input {
-      flex-grow: 1;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-    .chat-input button {
-      padding: 10px 20px;
-      border: none;
-      background: #007BFF;
-      color: white;
-      font-size: 16px;
-      border-radius: 4px;
+    .tool {
+      display: inline-block;
+      margin: 0 5px;
+      padding: 5px;
+      border: 1px solid black;
       cursor: pointer;
     }
-    .chat-input button:hover {
-      background: #0056b3;
+    .tool.selected {
+      background-color: lightgray;
+    }
+    #canvas {
+      border: 1px solid black;
+      image-rendering: pixelated; /* Pixelated brush effect */
+      cursor: crosshair;
     }
   </style>
 </head>
 <body>
-  <h1>Basic Chat System</h1>
-  <div class="chat-container">
-    <div class="chat-window" id="chatWindow"></div>
-    <div class="chat-input">
-      <input type="text" id="messageInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+  <h1>Simple Drawing System</h1>
+  <div id="toolbar">
+    <div class="tool selected" id="brush" onclick="selectTool('brush')">Brush</div>
+    <div class="tool" id="eraser" onclick="selectTool('eraser')">Eraser</div>
+    <div class="tool" id="bucket" onclick="selectTool('bucket')">Bucket</div>
+    <input type="color" id="colorPicker" value="#000000" onchange="changeColor(this.value)">
+    <button onclick="clearCanvas()">Clear</button>
+    <button onclick="downloadDrawing()">Download</button>
   </div>
+  <canvas id="canvas" width="640" height="480"></canvas>
 
   <script>
-    function sendMessage() {
-      const messageInput = document.getElementById('messageInput');
-      const chatWindow = document.getElementById('chatWindow');
-      const message = messageInput.value.trim();
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const tools = { brush: 'brush', eraser: 'eraser', bucket: 'bucket' };
+    let currentTool = tools.brush;
+    let currentColor = '#000000';
+    let isDrawing = false;
 
-      if (message) {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = message;
-        chatWindow.appendChild(messageElement);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-        messageInput.value = '';
+    // Initialize canvas
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (currentTool === tools.bucket) {
+        bucketFill(e.offsetX, e.offsetY);
+      } else {
+        isDrawing = true;
+        draw(e.offsetX, e.offsetY);
       }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (isDrawing && currentTool !== tools.bucket) {
+        draw(e.offsetX, e.offsetY);
+      }
+    });
+
+    canvas.addEventListener('mouseup', () => (isDrawing = false));
+    canvas.addEventListener('mouseleave', () => (isDrawing = false));
+
+    function draw(x, y) {
+      ctx.fillStyle = currentTool === tools.eraser ? '#FFFFFF' : currentColor;
+      ctx.fillRect(Math.floor(x), Math.floor(y), 10, 10); // Pixelated brush
+    }
+
+    function bucketFill(x, y) {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const targetColor = getColorAtPixel(imageData, x, y);
+      if (colorsMatch(targetColor, hexToRgb(currentColor))) return;
+
+      floodFill(imageData, x, y, targetColor, hexToRgb(currentColor));
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+    function getColorAtPixel(imageData, x, y) {
+      const index = (y * imageData.width + x) * 4;
+      return imageData.data.slice(index, index + 3);
+    }
+
+    function colorsMatch(color1, color2) {
+      return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2];
+    }
+
+    function floodFill(imageData, x, y, targetColor, fillColor) {
+      const stack = [[x, y]];
+      while (stack.length) {
+        const [cx, cy] = stack.pop();
+        const index = (cy * imageData.width + cx) * 4;
+
+        if (!colorsMatch(imageData.data.slice(index, index + 3), targetColor)) continue;
+
+        imageData.data[index] = fillColor[0];
+        imageData.data[index + 1] = fillColor[1];
+        imageData.data[index + 2] = fillColor[2];
+
+        if (cx > 0) stack.push([cx - 1, cy]);
+        if (cy > 0) stack.push([cx, cy - 1]);
+        if (cx < imageData.width - 1) stack.push([cx + 1, cy]);
+        if (cy < imageData.height - 1) stack.push([cx, cy + 1]);
+      }
+    }
+
+    function changeColor(color) {
+      currentColor = color;
+    }
+
+    function selectTool(tool) {
+      currentTool = tool;
+      document.querySelectorAll('.tool').forEach((toolElement) => toolElement.classList.remove('selected'));
+      document.getElementById(tool).classList.add('selected');
+    }
+
+    function clearCanvas() {
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function downloadDrawing() {
+      const link = document.createElement('a');
+      link.download = 'drawing.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
     }
   </script>
 </body>
