@@ -1,192 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Paint App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+<html>
+<style>
+        @keyframes rainbow {
+            0% { color: red; }
+            16% { color: orange; }
+            32% { color: yellow; }
+            48% { color: green; }
+            64% { color: blue; }
+            80% { color: indigo; }
+            100% { color: violet; }
+        }
+        .rainb {
+         
+            animation: rainbow 1s infinite, flash 1s infinite;
+        }
+        @keyframes flash {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+                    </style>
 
-    .toolbar {
-      display: flex;
-      justify-content: flex-start;
-      width: 640px;
-      margin-bottom: 5px;
-      border: 1px solid #ccc;
-      padding: 5px;
-      background-color: #f0f0f0;
-    }
-
-    .tool {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      margin: 0 5px;
-      border: 1px solid black;
-      text-align: center;
-      line-height: 30px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .tool.selected {
-      background-color: lightblue;
-    }
-
-    .color-palette {
-      display: flex;
-      justify-content: flex-start;
-      width: 640px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      padding: 5px;
-      background-color: #f0f0f0;
-    }
-
-    .color {
-      width: 30px;
-      height: 30px;
-      margin: 0 5px;
-      border: 1px solid black;
-      cursor: pointer;
-    }
-
-    canvas {
-      border: 1px solid black;
-    }
-  </style>
+       <head>
+<title>My Website! :D</title>       
 </head>
-<body>
-  <h1>Simple Paint App</h1>
-  <div class="toolbar">
-    <div class="tool selected" id="pencil" onclick="selectTool('pencil')">✏️</div>
-    <div class="tool" id="eraser" onclick="selectTool('eraser')">🩹</div>
-    <div class="tool" id="fill" onclick="selectTool('fill')">🪣</div>
-    <button onclick="clearCanvas()">Clear</button>
-    <button onclick="downloadImage()">Download</button>
-  </div>
-
-  <canvas id="canvas" width="640" height="480"></canvas>
-
-  <div class="color-palette" id="colorPalette"></div>
-
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const tools = { pencil: 'pencil', eraser: 'eraser', fill: 'fill' };
-    let currentTool = tools.pencil;
-    let isDrawing = false;
-    let currentColor = '#000000';
-
-    // Initialize canvas to white
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    canvas.addEventListener('mousedown', (e) => {
-      isDrawing = true;
-      if (currentTool === tools.fill) {
-        bucketFill(e.offsetX, e.offsetY);
-      } else {
-        draw(e.offsetX, e.offsetY);
-      }
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-      if (isDrawing && currentTool !== tools.fill) {
-        draw(e.offsetX, e.offsetY);
-      }
-    });
-
-    canvas.addEventListener('mouseup', () => (isDrawing = false));
-    canvas.addEventListener('mouseleave', () => (isDrawing = false));
-
-    function draw(x, y) {
-      ctx.fillStyle = currentTool === tools.eraser ? '#FFFFFF' : currentColor;
-      ctx.fillRect(Math.floor(x / 10) * 10, Math.floor(y / 10) * 10, 10, 10); // Pixelated brush
-    }
-
-    function bucketFill(x, y) {
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const targetColor = getColorAtPixel(imageData, x, y);
-      if (colorsMatch(targetColor, hexToRgb(currentColor))) return;
-
-      floodFill(imageData, x, y, targetColor, hexToRgb(currentColor));
-      ctx.putImageData(imageData, 0, 0);
-    }
-
-    function getColorAtPixel(imageData, x, y) {
-      const index = (y * imageData.width + x) * 4;
-      return imageData.data.slice(index, index + 3);
-    }
-
-    function colorsMatch(color1, color2) {
-      return color1[0] === color2[0] && color1[1] === color2[1] && color1[2] === color2[2];
-    }
-
-    function floodFill(imageData, x, y, targetColor, fillColor) {
-      const stack = [[x, y]];
-      while (stack.length) {
-        const [cx, cy] = stack.pop();
-        const index = (cy * imageData.width + cx) * 4;
-
-        if (!colorsMatch(imageData.data.slice(index, index + 3), targetColor)) continue;
-
-        imageData.data[index] = fillColor[0];
-        imageData.data[index + 1] = fillColor[1];
-        imageData.data[index + 2] = fillColor[2];
-
-        if (cx > 0) stack.push([cx - 1, cy]);
-        if (cy > 0) stack.push([cx, cy - 1]);
-        if (cx < imageData.width - 1) stack.push([cx + 1, cy]);
-        if (cy < imageData.height - 1) stack.push([cx, cy + 1]);
-      }
-    }
-
-    function hexToRgb(hex) {
-      const bigint = parseInt(hex.slice(1), 16);
-      return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
-    }
-
-    function clearCanvas() {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function selectTool(tool) {
-      currentTool = tool;
-      document.querySelectorAll('.tool').forEach((el) => el.classList.remove('selected'));
-      document.getElementById(tool).classList.add('selected');
-    }
-
-    function changeColor(color) {
-      currentColor = color;
-    }
-
-    function downloadImage() {
-      const link = document.createElement('a');
-      link.download = 'drawing.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    }
-
-    // Initialize color palette
-    const colorPalette = document.getElementById('colorPalette');
-    const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF'];
-    colors.forEach((color) => {
-      const colorBox = document.createElement('div');
-      colorBox.className = 'color';
-      colorBox.style.backgroundColor = color;
-      colorBox.onclick = () => changeColor(color);
-      colorPalette.appendChild(colorBox);
-    });
-  </script>
+       <body>
+             <h1 align="center" class="rainb" style="font-size: 100px;">This is my Website!<img src="C:\Users\konra\Downloads/silly-cat-silly.gif" width="100" height="100"></h1>
+<table border="3">    
+<tr>      
+<td>
+<br><b><kolor style="color: red;">Im still working on signing up and registry system so i can blog from 
+             <br>site and not make changes by notepad every time</kolor></b>
+             <br>On this site im trying to learn some html and i will try hardest to make basic blog
+             <br>Unfortunately backward compatibility will not work because im working on github but 
+<br>its still available for a lot of people
+             <br>I hope you enjoy every second on my <b><color class="rainb" style="font-size: 20;">site</color></b>
+             <br><colorweird>its in alpha stages.
+<br> also under this text is link to my github page :D
+<br><a href="https://github.com/MyHTMLWebsite" target="_blank">Click HERE</a>
+             <br><img src="C:\Users\konra\Downloads/silly-cat-silly.gif" width="100" height="100">
+<br><h3>And theres some tests down there :o</h3>
+</td>
+</tr>
+<table border="3">
+<tr>
+<td style="color: red;">
+test
+</td>
+<td style="color: green;">
+test2
+</td>
+</tr>
+<tr>
+<td style="color: yellow;">
+test3
+</td>
+<td style="color: blue;">
+test4
+</td>
+</tr>
 </body>
 </html>
