@@ -14,6 +14,11 @@
             80% { color: indigo; }
             100% { color: violet; }
         }
+        img {
+                float: left;
+                margin-right: 10px;
+                margin-top: 10px;
+            }
         .rainb {
          
             animation: rainbow 1s infinite, flash 1s infinite;
@@ -26,16 +31,13 @@
                 opacity: 1;
             }
         }
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column; /* Arrange items vertically */
-            align-items: center;    /* Horizontally center items */
-            justify-content: flex-start; /* Keep items at the top */
-        }
+        
         </style>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" 
+              content="IE=edge">
+        <meta name="viewport" 
+              content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <table border="3" style="margin: 0 auto; font-size: 16px;">
@@ -88,8 +90,17 @@
         </table>
 <h1 align="center" class="rainb" style="font-size: 100px;">Welcome To My Website</h1>
 
+<div align="center" style=" display: flex; justify-content: center; align-items: center; margin-right: 140px; margin-bottom: 100px;" >
+    
+    <img height="100px" width="140px"
+    src=
+    "max.gif"
+    
+    >
+    <button onclick="window.location.href='C:/Users/konra/OneDrive/Pulpit/site2.html';" 
+style="color:darkorange; font-size: 50px; padding: 0px 10px;">Go to Main Site</button>
+</div>
 
-<br><button onclick="window.location.href='C:/Users/konra/OneDrive/Pulpit/site2.html';" 
-style="color:darkgreen; font-size: 50px;" align="center;" >Go to Main Site</button>
-    </body>
+</div>
+</body>
 </html>
