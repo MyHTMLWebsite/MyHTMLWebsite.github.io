@@ -1,3 +1,4 @@
+
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet">
@@ -53,12 +54,47 @@
             body {
     font-family: 'Times New Roman', Times,;
 }
+#zoom-warning.visible {
+      display: block;
+      color: white;
+      background-color: red;
+    }
+    #main-content, #zoom-warning {
+      display: none;
+      text-align: center;
+      
+      font-family: 'Times New Roman', Times,;
+    }
+    #main-content.visible {
+      display: block;
+    }
         </style>
         <meta name="viewport" content="width=1024, initial-scale=0.5, minimum-scale=0.1, maximum-scale=3.0">
 
 
     </head>
-    <body style="background-color: #000;">
+    
+    <body style="background-color: #000;" id="main-content">
+        <script>
+            function checkZoom() {
+              const zoomLevel = Math.round(window.devicePixelRatio * 100);
+              const mainContent = document.getElementById("main-content");
+              const zoomWarning = document.getElementById("zoom-warning");
+        
+              // Toggle visibility based on zoom level
+              if (zoomLevel > 100) {
+                mainContent.classList.remove("visible"); // Hide main content
+                zoomWarning.classList.add("visible");   // Show warning
+              } else {
+                mainContent.classList.add("visible");   // Show main content
+                zoomWarning.classList.remove("visible"); // Hide warning
+              }
+            }
+        
+            // Run zoom check on page load and on resize/zoom events
+            window.addEventListener("load", checkZoom);
+            window.addEventListener("resize", checkZoom);
+          </script>
         <table border="10" style="margin: 0 auto; font-size: 20px;  ">
             <tr align="center">
                 <td style="padding: 0x 50px; color: aquamarine;">
@@ -119,9 +155,14 @@
     
     >
     <button onclick="window.location.href='site2.html';" 
-style="color:rgb(0, 0, 0); font-size: 30px; padding: 0px 10px;">Go to Main Site</button>
+style="color:rgb(0, 0, 0); font-size: 30px; ">Go to Main Site</button>
 </div>
-<p style="color: rgba(182, 180, 180, 0.63);  margin-top: 30%;" align="center">Made with Vs Code and hosted on Github<br>2025 Github All rights reserved</p>
+<table border="1" style="margin-top: 554px; " align="center" >
+    <tr>
+        <td>
+<p style="color: rgba(182, 180, 180, 0.63);  padding: 0px 700px;" align="center">Made with Vs Code and hosted on Github 2025 Github All rights reserved</p>
+</td>
+</tr>
 
 
 
@@ -132,4 +173,7 @@ style="color:rgb(0, 0, 0); font-size: 30px; padding: 0px 10px;">Go to Main Site<
     }
 </script>
 </body>
+<body2 id="zoom-warning" style="color: black;">
+hi
+</body2>
 </html>
