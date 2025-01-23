@@ -46,27 +46,14 @@
             body {
     font-family: 'Times New Roman', Times,;
 }
-#zoom-warning.visible {
-      display: block;
-      color: white;
-      background-color: red;
-    }
-    #main-content, #zoom-warning {
-      display: none;
-      text-align: center;
-      
-      font-family: 'Times New Roman', Times,;
-    }
-    #main-content.visible {
-      display: block;
-    }
+
         </style>
         <meta name="viewport" content="width=1024, initial-scale=0.5, minimum-scale=0.1, maximum-scale=3.0">
 
 
     </head>
     
-    <body style="background-color: #000;" id="main-content">
+    <body style="background-color: #000;" >
         <script>
             function checkZoom() {
               const zoomLevel = Math.round(window.devicePixelRatio * 100);
