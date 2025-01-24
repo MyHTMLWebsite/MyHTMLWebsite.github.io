@@ -8,6 +8,7 @@
                 position: fixed;
                top: 0;
                left: 50%;
+               
                transform: translateX(-50%);
               margin-top: 1%;
                text-align: left;
@@ -26,6 +27,7 @@
                 padding: 0x 10%;
                 text-align: center;
                 transition: 0.6s;
+                white-space: nowrap;
             }
             .lh:hover{
                 padding: auto 40px;
@@ -34,6 +36,17 @@
                 padding: 0x 10px;
                 text-align: center;
                 
+            }
+            @media (max-width: 600px) { /* For small screens */
+                .bf {
+                    font-size: 150%; /* Adjust the font size */
+                }
+            }
+
+            @media (max-width: 400px) { /* For very small screens */
+                .bf {
+                    font-size: 120%;
+                }
             }
         </style>
     </head>
