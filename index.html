@@ -8,9 +8,6 @@
 
     
         
-             .spaced {
-        margin-right: 10px;
-    }
         @keyframes rainbow {
             0% { color: red; }
             16% { color: orange; }
@@ -26,10 +23,14 @@
                 margin-top: 10px;
             }
         .rainb {
-         
-            animation: rainbow 1s infinite, flash 1s infinite;
-           
+            animation: rainbow 1s infinite;
+          transform: scale(1.009);
+          transition: 0.4s;
+          font-size: 80px; background-color: rgba(63, 62, 62, 0.418); text-shadow: 10px 2px 10px black; margin-top: 5%;
         }
+       .rainb:hover {
+font-size: 510%;
+       }
         @keyframes flash {
             0%, 100% {
                 opacity: 0;
@@ -44,18 +45,34 @@
 }
 .hb {
            
-           
-            transition: all 0.1s ease; 
+            transition: all 0.4s ease; 
+
         }
      
           .hb:hover {
-            margin: 0 15px;
+           
+            margin: 10px 10px;
             background-color: rgba(192, 192, 192, 0.315);
-            color: white;
-            transform: scale(1.05);
+            transform: scale(1.1);
+           
             
         }
+        .ht{
+            font-size: 20px;
+             background-color: rgb(133, 133, 133);
+              box-shadow: 3px 10px 20px black;
+               margin: 1% auto;
+margin-bottom: 1%;
+           transform: scale(1.0);
+transition: all 0.6s ease;
+        }
+.ht:hover {
+    align-self: center;
+    margin: 0% 15,7%;
+ font-size: 21px;
+transform: scale(1.02);
 
+}
         </style>
         <meta name="viewport" content="width=1024, initial-scale=0.5, minimum-scale=0.1, maximum-scale=3.0">
 
@@ -64,63 +81,63 @@
     
     <body style="background-color: #ffffff;" >
 
-        <table border="10" style="margin: 0 auto; font-size: 20px; background-color: rgb(88, 88, 88); box-shadow: 2px 5px 15px black;" >
+        <table border="7"  class="ht">
             <tr align="center">
-                <td style="padding: 0x 50px; color: black;">
+                <td style="padding: 0x 50px; color: black; border: 3px solid rgba(255, 255, 255, 0.247);">
                 
                     What Will You Find On This Site:                
                 </td>
-                <td style="color:white; padding: 0x 50px;">
+                <td style="color:white; padding: 0x 50px; border: 3px solid rgba(65, 65, 65, 0.884);">
                     Some Info About Me
                 
                 </td>
-                <td style="color:black; padding: 0x 50px;">
+                <td style="color:black; padding: 0x 50px; border: 3px solid rgba(255, 255, 255, 0.267);">
                     My Personal Opinion About Some Things
                 
                 </td>
-                <td style="color:white; padding: 0x 50px;">
+                <td style="color:white; padding: 0x 50px; border: 3px solid rgba(65, 65, 65, 0.884);">
                     Why I Love Computers So Much
                 
                 </td>
-                <td style="color:black; padding: 0x 50px;">
+                <td style="color:black; padding: 0x 50px; border: 3px solid rgba(255, 255, 255, 0.24);">
                     My Youtube
     
                 </td>
             </tr>
             <tr align="center">
-                <td style="color:white; padding: 0x 50px;">
+                <td style="color:white; padding: 0x 50px; border: 3px solid rgba(65, 65, 65, 0.884);">
     My Facebook 
                 </td>
-                <td style="color:black; padding: 0x 50px;">
+                <td style="color:black; padding: 0x 50px; border: 3px solid rgba(255, 255, 255, 0.274);">
     
                     My Github
                 </td>
-                <td style="color:white; padding: 0x 50px;">
+                <td style="color:white; padding: 0x 50px; border: 3px solid rgba(65, 65, 65, 0.884);">
     
                  My Email
                 </td>
-                <td style="color:black; padding: 0x 50px;">
+                <td style="color:black; padding: 0x 50px; border: 3px solid rgba(255, 255, 255, 0.281);">
     
                     My Hobbies
                 </td>
-                <td style="color:white; padding: 0x 50px;">
+                <td style="color:white; padding: 0x 50px;   border: 3px solid rgba(65, 65, 65, 0.884);">
     
                     My Favorite Things
                 </td>
                
            </tr>
             </table>
-<h1 align="center" class="rainb" style="font-size: 80px; background-color: rgba(63, 62, 62, 0.418); text-shadow: 10px 2px 10px black;" >Welcome To My Website</h1>
+<h1 align="center" class="rainb" >Welcome To My Website</h1>
 
 <div align="center" style=" display: flex; justify-content: center; align-items: center; margin-right: 18%; margin-bottom: 100px;" >
     
-   <kitty style="color: rgb(0, 0, 0);" >Little kitty Maxwell -> </kitty><img height="100px" width="140px"
+   <kitty style="color: rgb(0, 0, 0);  margin-right: 1%;" >Little kitty Maxwell -> </kitty><img height="100px" width="140px"
     src=
     "max.gif"
     
-    >
+     style="box-shadow: 3px 10px 15px black;">
     <button onclick="window.location.href='site2.html';" 
-style="color:rgb(0, 0, 0); font-size: 30px; box-shadow: 4px 5px 10px black;" class="hb">Go to Main Site</button>
+style="color:rgb(0, 0, 0); font-size: 30px; box-shadow: 4px 5px 10px black;  " class="hb" >Go to Main Site</button>
 </div>
 
 <p style="color: rgba(0, 0, 0, 0.788); margin-top: 30%; padding-left: 150px; padding-right: 150px;" align="center">Made with Vs Code and hosted on Github 2025 Github All rights reserved</p>
